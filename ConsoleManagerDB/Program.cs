@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,16 @@ namespace ConsoleManagerDB
         {
             string connectionString = @"Server=.\SQLEXPRESS;Database=userdb;Trusted_Connection=True";
 
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            connection.Open();
+            Console.WriteLine("Подключение открыто");
+
+
+
+
+            connection.Close();
+            Console.WriteLine("Подключение закрыто...");
 
         }
     }
