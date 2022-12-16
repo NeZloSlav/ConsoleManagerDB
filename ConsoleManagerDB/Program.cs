@@ -22,8 +22,29 @@ namespace ConsoleManagerDB
 
     }
 
-    internal class PrintUser
+    internal class PrintUsers
     {
+        public PrintUsers(SqlConnection connection)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                CommandText = "SELECT * FROM Users",
+                Connection = connection
+            };
+
+            SqlDataReader reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                Console.WriteLine($"{reader.GetName(0)}\t{reader.GetName(1)}\t{reader.GetName(2)}");
+
+                while (reader.Read())
+                {
+                    Console.WriteLine($"{reader.GetValue(1)}\t{reader.GetValue(1)}\t{reader.GetValue(2)}");
+                }
+            }
+            reader.Close();
+        }
 
     }
 
