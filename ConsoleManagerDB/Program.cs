@@ -7,6 +7,21 @@ using System.Threading.Tasks;
 
 namespace ConsoleManagerDB
 {
+    internal class User
+    {
+        public User(int userId, string userName, int userAge)
+        {
+            Id = userId;
+            Name = userName;
+            Age = userAge;
+        }
+
+        public int Id { get; private set; }
+        public string Name { get; private set; }
+        public int Age { get; private set; }
+
+    }
+
     internal class Program
     {
         static void Main(string[] args)
