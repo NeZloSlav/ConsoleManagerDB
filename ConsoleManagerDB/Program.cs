@@ -10,7 +10,8 @@ namespace ConsoleManagerDB
     {
         static void Main(string[] args)
         {
-            
+            string connectionString = @"Server=.\SQLEXPRESS;Database=userdb;Trusted_Connection=True";
+
 
         }
     }
