@@ -40,5 +40,38 @@ namespace ConsoleManagerDB
             Console.WriteLine("Подключение закрыто...");
 
         }
+
+        static void AddUser(SqlConnection connection)
+        {
+            Console.Write("Введите имя: ");
+            string name = Console.ReadLine();
+
+            Console.Write("Введите возраст: ");
+            int age;
+            if (int.TryParse(Console.ReadLine(), out age) == false) Console.WriteLine("Введите числовое значение");
+
+
+            SqlCommand command = new SqlCommand
+            {
+                CommandText = "INSERT INTO Users (Name, Age) VALUES (@name, @age)",
+                Connection = connection
+            };
+
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@name", name),
+                new SqlParameter("@age", age)
+            };
+
+            command.Parameters.Add(parameters);
+            int lines = command.ExecuteNonQuery();
+
+            if (lines > 0)
+            {
+                Console.WriteLine("Успешно добавлено! Затронуто ({0}) строк", lines);
+            }
+        }
     }
+
+
 }
