@@ -48,7 +48,12 @@ namespace ConsoleManagerDB
 
         public PrintUsers(List<User> users)
         {
+            Console.WriteLine("Id\tName\tAge");
 
+            foreach(User user in users) 
+            {
+                Console.WriteLine($"{user.Id}\t{user.Name}\t{user.Age}");
+            }
         }
     }
 
