@@ -137,6 +137,34 @@ namespace ConsoleManagerDB
                 Console.WriteLine("Успешно добавлено! Затронуто ({0}) строк", lines);
             }
         }
+
+        static void DeleteUser(SqlConnection connection)
+        {
+            Console.Write("Введите id: ");
+            int id = int.Parse(Console.ReadLine());
+
+
+            SqlCommand command = new SqlCommand
+            {
+                CommandText = "DELETE Users WHERE Id = @id",
+                Connection = connection
+            };
+
+            SqlParameter idParam = new SqlParameter("@id", id);
+            command.Parameters.Add(idParam);
+
+            int lines = command.ExecuteNonQuery();
+
+            if (lines > 0)
+            {
+                Console.WriteLine("Успешно! Затронуто строк ({0})", lines);
+            }
+            else
+            {
+                Console.WriteLine("Пользователя с id = {0} не существует",id);
+            }
+
+        }
     }
 
 
