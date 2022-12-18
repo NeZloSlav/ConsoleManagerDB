@@ -24,7 +24,7 @@ namespace ConsoleManagerDB
 
     internal class PrintUsers
     {
-        public void FromDB(SqlConnection connection)
+        public static void FromDB(SqlConnection connection)
         {
             SqlCommand command = new SqlCommand
             {
@@ -46,7 +46,7 @@ namespace ConsoleManagerDB
             reader.Close();
         }
 
-        public void FromList(List<User> users)
+        public static void FromList(List<User> users)
         {
             Console.WriteLine("Id\tName\tAge");
 
@@ -68,8 +68,8 @@ namespace ConsoleManagerDB
             connection.Open();
             Console.WriteLine("Подключение открыто");
 
-
-
+            
+            
 
             connection.Close();
             Console.WriteLine("Подключение закрыто...");
