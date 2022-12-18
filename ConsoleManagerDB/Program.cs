@@ -166,6 +166,87 @@ namespace ConsoleManagerDB
 
         }
 
+        class UpdateUser
+        {
+            private static int ID;
+
+            private static void InputUserID()
+            {
+                Console.Write("Введите id: ");
+                int id = int.Parse(Console.ReadLine());
+
+                ID = id;
+            }
+
+
+            private static void ForName(SqlConnection connection)
+            {
+                InputUserID();
+
+                Console.Write("Введите новое имя: ");
+                string Name = Console.ReadLine();
+
+                SqlCommand command = new SqlCommand
+                {
+                    CommandText = "UPDATE Users SET Name = @name WHERE Id = @id",
+                    Connection = connection
+                };
+
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@name", Name),
+                    new SqlParameter("@id", ID)
+                };
+
+                command.Parameters.Add(parameters);
+
+                int lines = command.ExecuteNonQuery();
+
+                if (lines > 0)
+                {
+                    Console.WriteLine("Данные успешно обновлены!");
+                }
+                else
+                {
+                    Console.WriteLine("Данные не обновлены. Пользователя с данным id не существует...");
+                }
+            }
+
+            private static void ForAge(SqlConnection connection)
+            {
+                InputUserID();
+
+                Console.WriteLine("Введите возраст: ");
+                int Age = int.Parse(Console.ReadLine());
+
+                SqlCommand command = new SqlCommand
+                {
+                    CommandText = "UPDATE Users SET Age = @age WHERE Id = @id",
+                    Connection = connection
+                };
+
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@age", Age),
+                    new SqlParameter("@id", ID)
+                };
+
+                command.Parameters.Add(parameters);
+
+                int lines = command.ExecuteNonQuery();
+
+                if (lines > 0)
+                {
+                    Console.WriteLine("Данные успешно обновлены!");
+                }
+                else
+                {
+                    Console.WriteLine("Данные не обновлены. Пользователя с данным id не существует.");
+                }
+            }
+
+        }
+
     }
 
 
