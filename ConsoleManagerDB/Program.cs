@@ -57,6 +57,19 @@ namespace ConsoleManagerDB
         }
     }
 
+    internal class InputUserData
+    {
+        public static int UserID()
+        {
+            Console.Write("Введите id: ");
+            int id = int.Parse(Console.ReadLine());
+
+            return id;
+        }
+
+
+    }
+
     internal class Program
     {
         static void Main(string[] args)
@@ -168,20 +181,11 @@ namespace ConsoleManagerDB
 
         class UpdateUser
         {
-            private static int ID;
-
-            private static void InputUserID()
-            {
-                Console.Write("Введите id: ");
-                int id = int.Parse(Console.ReadLine());
-
-                ID = id;
-            }
-
+            private static readonly int ID = InputUserData.UserID();
 
             private static void ForName(SqlConnection connection)
             {
-                InputUserID();
+                int ID = InputUserData.UserID();
 
                 Console.Write("Введите новое имя: ");
                 string Name = Console.ReadLine();
@@ -214,7 +218,7 @@ namespace ConsoleManagerDB
 
             private static void ForAge(SqlConnection connection)
             {
-                InputUserID();
+                int ID = InputUserData.UserID();
 
                 Console.WriteLine("Введите возраст: ");
                 int Age = int.Parse(Console.ReadLine());
