@@ -137,13 +137,9 @@ namespace ConsoleManagerDB
 
         static void AddUser(SqlConnection connection)
         {
-            Console.Write("Введите имя: ");
-            string name = Console.ReadLine();
+            string name = InputUserData.UserName();
 
-            Console.Write("Введите возраст: ");
-            int age;
-            if (int.TryParse(Console.ReadLine(), out age) == false) Console.WriteLine("Введите числовое значение");
-
+            int age = InputUserData.UserAge();
 
             SqlCommand command = new SqlCommand
             {
@@ -168,9 +164,7 @@ namespace ConsoleManagerDB
 
         static void DeleteUser(SqlConnection connection)
         {
-            Console.Write("Введите id: ");
-            int id = int.Parse(Console.ReadLine());
-
+            int id = InputUserData.UserID();
 
             SqlCommand command = new SqlCommand
             {
@@ -200,8 +194,7 @@ namespace ConsoleManagerDB
 
             private static void ForName(SqlConnection connection)
             {
-                Console.Write("Введите новое имя: ");
-                string Name = Console.ReadLine();
+                string Name = InputUserData.UserName();
 
                 SqlCommand command = new SqlCommand
                 {
@@ -231,8 +224,7 @@ namespace ConsoleManagerDB
 
             private static void ForAge(SqlConnection connection)
             {
-                Console.WriteLine("Введите возраст: ");
-                int Age = int.Parse(Console.ReadLine());
+                int Age = InputUserData.UserAge();
 
                 SqlCommand command = new SqlCommand
                 {
