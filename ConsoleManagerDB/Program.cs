@@ -50,7 +50,7 @@ namespace ConsoleManagerDB
         {
             Console.WriteLine("Id\tName\tAge");
 
-            foreach(User user in users) 
+            foreach (User user in users)
             {
                 Console.WriteLine($"{user.Id}\t{user.Name}\t{user.Age}");
             }
@@ -61,24 +61,78 @@ namespace ConsoleManagerDB
     {
         public static int UserID()
         {
-            Console.Write("Введите id: ");
-            int id = int.Parse(Console.ReadLine());
+            int id;
+
+            while (true)
+            {
+                Console.Write("Введите id: ");
+                bool isNum = int.TryParse(Console.ReadLine(), out id);
+
+                if (isNum)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Недопустимое значение, попробуйте ещё раз");
+                }
+            }
 
             return id;
         }
 
         public static string UserName()
         {
-            Console.Write("Введите имя: ");
-            string name = Console.ReadLine();
+            string name;
+
+            bool isSuitableName = true;
+
+            while (true)
+            {
+                Console.Write("Введите имя: ");
+                name = Console.ReadLine();
+
+                for (int i = 0; i < name.Length; i++)
+                {
+                    if (Char.IsNumber(name[i]))
+                    {
+                        isSuitableName = false;
+                        break;
+                    }
+                }
+
+                if (isSuitableName)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Недопустимое значение, попробуйте ещё раз");
+                    isSuitableName = true;
+                }
+            }
 
             return name;
         }
 
         public static int UserAge()
         {
-            Console.Write("Введите возраст: ");
-            int age = int.Parse(Console.ReadLine());
+            int age;
+
+            while (true)
+            {
+                Console.Write("Введите возраст: ");
+                bool isNum = int.TryParse(Console.ReadLine(), out age);
+
+                if (isNum)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Недопустимое значение, попробуйте ещё раз");
+                }
+            }
 
             return age;
         }
@@ -89,19 +143,21 @@ namespace ConsoleManagerDB
     {
         static void Main(string[] args)
         {
-            string connectionString = @"Server=.\SQLEXPRESS;Database=userdb;Trusted_Connection=True";
+            //string connectionString = @"Server=.\SQLEXPRESS;Database=userdb;Trusted_Connection=True";
 
-            SqlConnection connection = new SqlConnection(connectionString);
+            //SqlConnection connection = new SqlConnection(connectionString);
 
-            connection.Open();
-            Console.WriteLine("Подключение открыто");
+            //connection.Open();
+            //Console.WriteLine("Подключение открыто");
 
-            
-            
 
-            connection.Close();
-            Console.WriteLine("Подключение закрыто...");
 
+
+            //connection.Close();
+            //Console.WriteLine("Подключение закрыто...");
+
+            int id = InputUserData.UserID();
+            Console.WriteLine(id);
         }
 
         private static List<User> GetUsersList(SqlConnection connection)
@@ -183,7 +239,7 @@ namespace ConsoleManagerDB
             }
             else
             {
-                Console.WriteLine("Пользователя с id = {0} не существует",id);
+                Console.WriteLine("Пользователя с id = {0} не существует", id);
             }
 
         }
