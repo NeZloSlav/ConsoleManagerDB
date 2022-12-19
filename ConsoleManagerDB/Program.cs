@@ -67,6 +67,21 @@ namespace ConsoleManagerDB
             return id;
         }
 
+        public static string UserName()
+        {
+            Console.Write("Введите имя: ");
+            string name = Console.ReadLine();
+
+            return name;
+        }
+
+        public static int UserAge()
+        {
+            Console.Write("Введите возраст: ");
+            int age = int.Parse(Console.ReadLine());
+
+            return age;
+        }
 
     }
 
@@ -185,8 +200,6 @@ namespace ConsoleManagerDB
 
             private static void ForName(SqlConnection connection)
             {
-                int ID = InputUserData.UserID();
-
                 Console.Write("Введите новое имя: ");
                 string Name = Console.ReadLine();
 
@@ -218,8 +231,6 @@ namespace ConsoleManagerDB
 
             private static void ForAge(SqlConnection connection)
             {
-                int ID = InputUserData.UserID();
-
                 Console.WriteLine("Введите возраст: ");
                 int Age = int.Parse(Console.ReadLine());
 
