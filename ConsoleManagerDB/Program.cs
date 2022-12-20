@@ -353,7 +353,40 @@ namespace ConsoleManagerDB
             connection.Open();
             Console.WriteLine("Подключение открыто");
 
+            bool isExit = false;
 
+            while (isExit != true)
+            {
+                Console.WriteLine("Добро пожаловать! Что вы хотите сделать?" +
+                "\n1) Вывести данные о пользователях. " +
+                "\n2) Добавить пользователя. " +
+                "\n3) Обновить пользователя. " +
+                "\n4) Удалить пользователя. " +
+                "\n5) Выйти...");
+                string answer = Console.ReadLine();
+
+                switch (answer)
+                {
+                    case "1":
+                        //PrintUsers;
+                        break;
+                    case "2":
+                        //DataActoins;
+                        break;
+                    case "3":
+                        //DataActoins;
+                        break;
+                    case "4":
+                        //DataActoins;
+                        break;
+                    case "5":
+                        isExit = true;
+                        break;
+                    default:
+                        Console.WriteLine("Введите номер действия.");
+                        break;
+                }
+            }
 
             connection.Close();
             Console.WriteLine("Подключение закрыто...");
