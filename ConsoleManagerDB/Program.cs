@@ -296,7 +296,49 @@ namespace ConsoleManagerDB
 
         public class ViaProcedure
         {
+            public static void AddUser(SqlConnection connection)
+            {
+                string name = InputUserData.UserName();
 
+                int age = InputUserData.UserAge();
+
+                SqlCommand commandProc = new SqlCommand
+                {
+                    CommandText = @"CREATE OR ALTER PROCEDURE [dbo].[sp_InsertUser]
+                                        @name nvarchar(50),
+                                        @age int
+                                    AS
+                                        INSERT INTO Users
+                                        ([Name], Age)
+                                        VALUES
+                                        (@name, @age)
+
+                                    SELECT SCOPE_IDENTITY();
+                                    GO",
+                    Connection = connection
+                };
+
+                commandProc.ExecuteNonQuery();
+
+                SqlCommand command = new SqlCommand
+                {
+                    CommandText = "sp_InsertUser",
+                    Connection = connection,
+                    CommandType = System.Data.CommandType.StoredProcedure
+                };
+
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@name", name),
+                    new SqlParameter("@age", age)
+                };
+
+                command.Parameters.Add(parameters);
+
+                var id = command.ExecuteScalar();
+
+                Console.WriteLine("Успешно добавлено! Id пользователя: {0} ", id);
+            }
         }
     }
 
