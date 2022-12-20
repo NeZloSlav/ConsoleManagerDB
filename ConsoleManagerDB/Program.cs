@@ -55,12 +55,49 @@ namespace ConsoleManagerDB
 
     internal class PrintUsers
     {
-        public static void FromDB(SqlConnection connection)
+        private static SqlConnection connect;
+        public static void Print(SqlConnection connection)
+        {
+            connect = connection;
+
+            bool isExit = false;
+
+            while(isExit != true)
+            {
+                Console.WriteLine("Вывести:" +
+               "\n1) Напрямую из БД" +
+               "\n2) Из БД с созданием списка" +
+               "\n3) Назад");
+
+                string answer = Console.ReadLine();
+
+                switch (answer)
+                {
+                    case "1":
+                        FromDB();
+                        isExit = true;
+                        break;
+                    case "2":
+                        FromList();
+                        isExit = true;
+                        break;
+                    case "3":
+                        isExit = true;
+                        break;
+
+                    default:
+                        Console.Clear();
+                        break;
+                }
+            }
+        }
+
+        private static void FromDB()
         {
             SqlCommand command = new SqlCommand
             {
                 CommandText = "SELECT * FROM Users",
-                Connection = connection
+                Connection = connect
             };
 
             SqlDataReader reader = command.ExecuteReader();
@@ -71,14 +108,16 @@ namespace ConsoleManagerDB
 
                 while (reader.Read())
                 {
-                    Console.WriteLine($"{reader.GetValue(1)}\t{reader.GetValue(1)}\t{reader.GetValue(2)}");
+                    Console.WriteLine($"{reader.GetValue(0)}\t{reader.GetValue(1)}\t{reader.GetValue(2)}");
                 }
             }
             reader.Close();
         }
 
-        public static void FromList(List<User> users)
+        private static void FromList()
         {
+            List<User> users = User.GetUsersList(connect);
+
             Console.WriteLine("Id\tName\tAge");
 
             foreach (User user in users)
@@ -351,13 +390,13 @@ namespace ConsoleManagerDB
             SqlConnection connection = new SqlConnection(connectionString);
 
             connection.Open();
-            Console.WriteLine("Подключение открыто");
+            Console.WriteLine("Добро пожаловать! Подключение открыто...");
 
             bool isExit = false;
 
             while (isExit != true)
             {
-                Console.WriteLine("Добро пожаловать! Что вы хотите сделать?" +
+                Console.WriteLine("\nЧто вы хотите сделать?" +
                 "\n1) Вывести данные о пользователях. " +
                 "\n2) Добавить пользователя. " +
                 "\n3) Обновить пользователя. " +
@@ -368,7 +407,7 @@ namespace ConsoleManagerDB
                 switch (answer)
                 {
                     case "1":
-                        //PrintUsers;
+                        PrintUsers.Print(connection);
                         break;
                     case "2":
                         //DataActoins;
