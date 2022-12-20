@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleManagerDB
 {
@@ -62,7 +59,7 @@ namespace ConsoleManagerDB
 
             bool isExit = false;
 
-            while(isExit != true)
+            while (isExit != true)
             {
                 Console.WriteLine("Вывести:" +
                "\n1) Напрямую из БД" +
@@ -210,9 +207,83 @@ namespace ConsoleManagerDB
 
     internal class DataActoins
     {
-        public class ViaQuery
+        private static SqlConnection connect;
+
+        public static bool isAddMode = false;
+        public static bool isUpdateMode = false;
+        public static bool isDeleteMode = false;
+
+        public static void Choose(SqlConnection connection)
         {
-            public static void AddUser(SqlConnection connection)
+            connect = connection;
+
+            if (isAddMode)
+            {
+                while (true)
+                {
+                    Console.WriteLine("Добавить: " +
+                           "\n1) Через запрос." +
+                           "\n2) Через процедуру." +
+                           "\n3) Назад...");
+                    string answer = Console.ReadLine();
+
+                    if (answer == "1")
+                    {
+                        ViaQuery.AddUser();
+                        break;
+                    }
+                    if (answer == "2")
+                    {
+                        ViaProcedure.AddUser();
+                        break;
+                    }
+                    if (answer == "3")
+                    {
+                        break;
+                    }
+                }
+
+                isAddMode = false;
+            }
+
+            if (isUpdateMode)
+            {
+                while (isUpdateMode)
+                {
+                    Console.WriteLine("Обновить: " +
+                            "\n1) Данные об имени" +
+                            "\n2) Данные о возрасте" +
+                            "\n3) Назад...");
+                    string answer = Console.ReadLine();
+                    if (answer == "1")
+                    {
+                        ViaQuery.UpdateUser.ForName();
+                        break;
+                    }
+                    if (answer == "2")
+                    {
+                        ViaQuery.UpdateUser.ForAge();
+                        break;
+                    }
+                    if (answer == "3")
+                    {
+                        break;
+                    }
+                }
+
+                isUpdateMode = false;
+            }
+
+            if (isDeleteMode)
+            {
+                ViaQuery.DeleteUser();
+                isDeleteMode = false;
+            }
+        }
+
+        private class ViaQuery
+        {
+            public static void AddUser()
             {
                 string name = InputUserData.UserName();
 
@@ -221,7 +292,7 @@ namespace ConsoleManagerDB
                 SqlCommand command = new SqlCommand
                 {
                     CommandText = "INSERT INTO Users (Name, Age) VALUES (@name, @age)",
-                    Connection = connection
+                    Connection = connect
                 };
 
                 SqlParameter[] parameters =
@@ -239,14 +310,14 @@ namespace ConsoleManagerDB
                 }
             }
 
-            public static void DeleteUser(SqlConnection connection)
+            public static void DeleteUser()
             {
                 int id = InputUserData.UserID();
 
                 SqlCommand command = new SqlCommand
                 {
                     CommandText = "DELETE Users WHERE Id = @id",
-                    Connection = connection
+                    Connection = connect
                 };
 
                 SqlParameter idParam = new SqlParameter("@id", id);
@@ -267,7 +338,7 @@ namespace ConsoleManagerDB
 
             public class UpdateUser
             {
-                public static void ForName(SqlConnection connection)
+                public static void ForName()
                 {
                     int ID = InputUserData.UserID();
 
@@ -276,7 +347,7 @@ namespace ConsoleManagerDB
                     SqlCommand command = new SqlCommand
                     {
                         CommandText = "UPDATE Users SET Name = @name WHERE Id = @id",
-                        Connection = connection
+                        Connection = connect
                     };
 
                     SqlParameter[] parameters =
@@ -299,7 +370,7 @@ namespace ConsoleManagerDB
                     }
                 }
 
-                public static void ForAge(SqlConnection connection)
+                public static void ForAge()
                 {
                     int ID = InputUserData.UserID();
 
@@ -308,7 +379,7 @@ namespace ConsoleManagerDB
                     SqlCommand command = new SqlCommand
                     {
                         CommandText = "UPDATE Users SET Age = @age WHERE Id = @id",
-                        Connection = connection
+                        Connection = connect
                     };
 
                     SqlParameter[] parameters =
@@ -334,9 +405,9 @@ namespace ConsoleManagerDB
             }
         }
 
-        public class ViaProcedure
+        private class ViaProcedure
         {
-            public static void AddUser(SqlConnection connection)
+            public static void AddUser()
             {
                 string name = InputUserData.UserName();
 
@@ -355,7 +426,7 @@ namespace ConsoleManagerDB
 
                                         SELECT SCOPE_IDENTITY()
                                     GO",
-                    Connection = connection
+                    Connection = connect
                 };
 
                 commandProc.ExecuteNonQuery();
@@ -363,7 +434,7 @@ namespace ConsoleManagerDB
                 SqlCommand command = new SqlCommand
                 {
                     CommandText = "sp_InsertUser",
-                    Connection = connection,
+                    Connection = connect,
                     CommandType = System.Data.CommandType.StoredProcedure
                 };
 
@@ -397,57 +468,24 @@ namespace ConsoleManagerDB
 
             while (isExit != true)
             {
-                Console.WriteLine("\nЧто вы хотите сделать?" +
-                "\n1) Вывести данные о пользователях. " +
-                "\n2) Добавить пользователя. " +
-                "\n3) Обновить пользователя. " +
-                "\n4) Удалить пользователя. " +
-                "\n5) Очистить консоль." +
-                "\n6) Выйти...");
-                string answer = Console.ReadLine();
+                string answer = ShowMenuAndGetAnswer();
 
-                string a;
                 switch (answer)
                 {
                     case "1":
                         PrintUsers.Print(connection);
                         break;
                     case "2":
-                        Console.WriteLine("Добавить: " +
-                            "\n1) Через запрос." +
-                            "\n2) Через процедуру." +
-                            "\n3) Назад...");
-                         a = Console.ReadLine();
-                        if (a == "1")
-                        {
-                            DataActoins.ViaQuery.AddUser(connection);
-                            break;
-                        }
-                        if (a == "2")
-                        {
-                            DataActoins.ViaProcedure.AddUser(connection);
-                            break;
-                        }
+                        DataActoins.isAddMode = true;
+                        DataActoins.Choose(connection);
                         break;
                     case "3":
-                        Console.WriteLine("Обновить: " +
-                            "\n1) Данные об имени" +
-                            "\n2) Данные о возрасте" +
-                            "\n3) Назад...");
-                        a = Console.ReadLine();
-                        if (a == "1")
-                        {
-                            DataActoins.ViaQuery.UpdateUser.ForName(connection);
-                            break;
-                        }
-                        if (a == "2")
-                        {
-                            DataActoins.ViaQuery.UpdateUser.ForAge(connection);
-                            break;
-                        }
+                        DataActoins.isUpdateMode = true;
+                        DataActoins.Choose(connection);
                         break;
                     case "4":
-                        DataActoins.ViaQuery.DeleteUser(connection);
+                        DataActoins.isDeleteMode = true;
+                        DataActoins.Choose(connection);
                         break;
                     case "5":
                         Console.Clear();
@@ -465,6 +503,19 @@ namespace ConsoleManagerDB
             connection.Close();
             Console.WriteLine("Подключение закрыто...");
 
+        }
+
+        static string ShowMenuAndGetAnswer()
+        {
+            Console.WriteLine("\nЧто вы хотите сделать?" +
+                "\n1) Вывести данные о пользователях. " +
+                "\n2) Добавить пользователя. " +
+                "\n3) Обновить пользователя. " +
+                "\n4) Удалить пользователя. " +
+                "\n5) Очистить консоль." +
+                "\n6) Выйти...");
+            string answer = Console.ReadLine();
+            return answer;
         }
     }
 
