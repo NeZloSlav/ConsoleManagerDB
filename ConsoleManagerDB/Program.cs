@@ -86,7 +86,6 @@ namespace ConsoleManagerDB
                         break;
 
                     default:
-                        Console.Clear();
                         break;
                 }
             }
@@ -231,7 +230,7 @@ namespace ConsoleManagerDB
                 new SqlParameter("@age", age)
             };
 
-                command.Parameters.Add(parameters);
+                command.Parameters.AddRange(parameters);
                 int lines = command.ExecuteNonQuery();
 
                 if (lines > 0)
@@ -268,10 +267,10 @@ namespace ConsoleManagerDB
 
             public class UpdateUser
             {
-                private static readonly int ID = InputUserData.UserID();
-
                 public static void ForName(SqlConnection connection)
                 {
+                    int ID = InputUserData.UserID();
+
                     string Name = InputUserData.UserName();
 
                     SqlCommand command = new SqlCommand
@@ -286,7 +285,7 @@ namespace ConsoleManagerDB
                     new SqlParameter("@id", ID)
                 };
 
-                    command.Parameters.Add(parameters);
+                    command.Parameters.AddRange(parameters);
 
                     int lines = command.ExecuteNonQuery();
 
@@ -302,6 +301,8 @@ namespace ConsoleManagerDB
 
                 public static void ForAge(SqlConnection connection)
                 {
+                    int ID = InputUserData.UserID();
+
                     int Age = InputUserData.UserAge();
 
                     SqlCommand command = new SqlCommand
@@ -316,7 +317,7 @@ namespace ConsoleManagerDB
                     new SqlParameter("@id", ID)
                 };
 
-                    command.Parameters.Add(parameters);
+                    command.Parameters.AddRange(parameters);
 
                     int lines = command.ExecuteNonQuery();
 
@@ -352,7 +353,7 @@ namespace ConsoleManagerDB
                                         VALUES
                                         (@name, @age)
 
-                                    SELECT SCOPE_IDENTITY();
+                                        SELECT SCOPE_IDENTITY()
                                     GO",
                     Connection = connection
                 };
@@ -372,7 +373,7 @@ namespace ConsoleManagerDB
                     new SqlParameter("@age", age)
                 };
 
-                command.Parameters.Add(parameters);
+                command.Parameters.AddRange(parameters);
 
                 var id = command.ExecuteScalar();
 
@@ -401,26 +402,60 @@ namespace ConsoleManagerDB
                 "\n2) Добавить пользователя. " +
                 "\n3) Обновить пользователя. " +
                 "\n4) Удалить пользователя. " +
-                "\n5) Выйти...");
+                "\n5) Очистить консоль." +
+                "\n6) Выйти...");
                 string answer = Console.ReadLine();
 
+                string a;
                 switch (answer)
                 {
                     case "1":
                         PrintUsers.Print(connection);
                         break;
                     case "2":
-                        //DataActoins;
+                        Console.WriteLine("Добавить: " +
+                            "\n1) Через запрос." +
+                            "\n2) Через процедуру." +
+                            "\n3) Назад...");
+                         a = Console.ReadLine();
+                        if (a == "1")
+                        {
+                            DataActoins.ViaQuery.AddUser(connection);
+                            break;
+                        }
+                        if (a == "2")
+                        {
+                            DataActoins.ViaProcedure.AddUser(connection);
+                            break;
+                        }
                         break;
                     case "3":
-                        //DataActoins;
+                        Console.WriteLine("Обновить: " +
+                            "\n1) Данные об имени" +
+                            "\n2) Данные о возрасте" +
+                            "\n3) Назад...");
+                        a = Console.ReadLine();
+                        if (a == "1")
+                        {
+                            DataActoins.ViaQuery.UpdateUser.ForName(connection);
+                            break;
+                        }
+                        if (a == "2")
+                        {
+                            DataActoins.ViaQuery.UpdateUser.ForAge(connection);
+                            break;
+                        }
                         break;
                     case "4":
-                        //DataActoins;
+                        DataActoins.ViaQuery.DeleteUser(connection);
                         break;
                     case "5":
+                        Console.Clear();
+                        break;
+                    case "6":
                         isExit = true;
                         break;
+
                     default:
                         Console.WriteLine("Введите номер действия.");
                         break;
