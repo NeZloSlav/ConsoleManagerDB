@@ -20,6 +20,37 @@ namespace ConsoleManagerDB
         public string Name { get; private set; }
         public int Age { get; private set; }
 
+        public static List<User> GetUsersList(SqlConnection connection)
+        {
+            List<User> users = new List<User>();
+
+            SqlCommand command = new SqlCommand
+            {
+                CommandText = "SELECT * FROM Users",
+                Connection = connection
+            };
+
+            SqlDataReader reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    int Id = reader.GetInt32(0);
+                    string Name = reader.GetString(1);
+                    int Age = reader.GetInt32(2);
+
+                    User user = new User(Id, Name, Age);
+                    users.Add(user);
+                }
+            }
+            reader.Close();
+
+            Console.WriteLine("Список пользователей создан.");
+
+            return users;
+        }
+
     }
 
     internal class PrintUsers
@@ -143,37 +174,6 @@ namespace ConsoleManagerDB
     {
         public class ViaQuery
         {
-            public static List<User> GetUsersList(SqlConnection connection)
-            {
-                List<User> users = new List<User>();
-
-                SqlCommand command = new SqlCommand
-                {
-                    CommandText = "SELECT * FROM Users",
-                    Connection = connection
-                };
-
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        int Id = reader.GetInt32(0);
-                        string Name = reader.GetString(1);
-                        int Age = reader.GetInt32(2);
-
-                        User user = new User(Id, Name, Age);
-                        users.Add(user);
-                    }
-                }
-                reader.Close();
-
-                Console.WriteLine("Список пользователей создан.");
-
-                return users;
-            }
-
             public static void AddUser(SqlConnection connection)
             {
                 string name = InputUserData.UserName();
