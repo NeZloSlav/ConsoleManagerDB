@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Threading;
 
 namespace ConsoleManagerDB
 {
@@ -457,52 +458,57 @@ namespace ConsoleManagerDB
     {
         static void Main(string[] args)
         {
-            string connectionString = @"Server=.\SQLEXPRESS;Database=userdb;Trusted_Connection=True";
+            bool isExists = IsDBExists();
 
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            connection.Open();
-            Console.WriteLine("Добро пожаловать! Подключение открыто...");
-
-            bool isExit = false;
-
-            while (isExit != true)
+            if (isExists)
             {
-                string answer = ShowMenuAndGetAnswer();
+                string connectionString = @"Server=.\SQLEXPRESS;Database=userdb;Trusted_Connection=True";
 
-                switch (answer)
+                SqlConnection connection = new SqlConnection(connectionString);
+
+                connection.Open();
+                Console.WriteLine("Добро пожаловать! Подключение открыто...");
+
+                bool isExit = false;
+
+                while (isExit != true)
                 {
-                    case "1":
-                        PrintUsers.Print(connection);
-                        break;
-                    case "2":
-                        DataActoins.isAddMode = true;
-                        DataActoins.Choose(connection);
-                        break;
-                    case "3":
-                        DataActoins.isUpdateMode = true;
-                        DataActoins.Choose(connection);
-                        break;
-                    case "4":
-                        DataActoins.isDeleteMode = true;
-                        DataActoins.Choose(connection);
-                        break;
-                    case "5":
-                        Console.Clear();
-                        break;
-                    case "6":
-                        isExit = true;
-                        break;
+                    string answer = ShowMenuAndGetAnswer();
 
-                    default:
-                        Console.WriteLine("Введите номер действия.");
-                        break;
+                    switch (answer)
+                    {
+                        case "1":
+                            PrintUsers.Print(connection);
+                            break;
+                        case "2":
+                            DataActoins.isAddMode = true;
+                            DataActoins.Choose(connection);
+                            break;
+                        case "3":
+                            DataActoins.isUpdateMode = true;
+                            DataActoins.Choose(connection);
+                            break;
+                        case "4":
+                            DataActoins.isDeleteMode = true;
+                            DataActoins.Choose(connection);
+                            break;
+                        case "5":
+                            Console.Clear();
+                            break;
+                        case "6":
+                            isExit = true;
+                            break;
+
+                        default:
+                            Console.WriteLine("Введите номер действия.");
+                            break;
+                    }
                 }
+
+                connection.Close();
+                Console.WriteLine("Подключение закрыто...");
             }
-
-            connection.Close();
-            Console.WriteLine("Подключение закрыто...");
-
+            
         }
 
         static string ShowMenuAndGetAnswer()
@@ -516,6 +522,54 @@ namespace ConsoleManagerDB
                 "\n6) Выйти...");
             string answer = Console.ReadLine();
             return answer;
+        }
+
+        static bool IsDBExists()
+        {
+            bool isExists = false;
+
+            Console.WriteLine("Проверка на наличие базы данных...");
+            string connectionStringMaster = @"Server=.\SQLEXPRESS;Database=master;Trusted_Connection=True";
+
+            SqlConnection connectionMaster = new SqlConnection(connectionStringMaster);
+            connectionMaster.Open();
+
+            SqlCommand command = new SqlCommand
+            {
+                CommandText = @"SELECT [Name]
+                                FROM sys.databases
+                                WHERE [Name] = @dbName",
+                Connection = connectionMaster
+            };
+
+            SqlParameter dbNameParam = new SqlParameter("@dbName", "userdb");
+            command.Parameters.Add(dbNameParam);
+
+            SqlDataReader reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                Console.WriteLine("База найдена! Продуктивной работы)");
+                isExists = true;
+                Thread.Sleep(1500);
+                Console.Clear();
+            }
+            else
+            {
+                Console.WriteLine("База userdb не найдена, создать её? (0-нет/1-да)");
+                string create = Console.ReadLine();
+                if (create == "1")
+                {
+                    command.CommandText = "CREATE DATABASE userdb";
+                    command.ExecuteNonQuery();
+                    isExists = true;
+                    Console.WriteLine("База данных создана! Продуктивной работы)");
+                    Thread.Sleep(1500);
+                    Console.Clear();
+                }
+            }
+
+            return isExists;
         }
     }
 
