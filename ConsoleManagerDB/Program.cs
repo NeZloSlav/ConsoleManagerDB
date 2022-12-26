@@ -456,6 +456,7 @@ namespace ConsoleManagerDB
 
     internal class Program
     {
+
         static void Main(string[] args)
         {
             bool isExists = IsDBExists();
@@ -542,7 +543,7 @@ namespace ConsoleManagerDB
                 Connection = connectionMaster
             };
 
-            SqlParameter dbNameParam = new SqlParameter("@dbName", "userdb");
+            SqlParameter dbNameParam = new SqlParameter("@dbName", "userdb1");
             command.Parameters.Add(dbNameParam);
 
             SqlDataReader reader = command.ExecuteReader();
@@ -562,17 +563,22 @@ namespace ConsoleManagerDB
                 string create = Console.ReadLine();
                 if (create == "1")
                 {
-                    command.CommandText = "CREATE DATABASE userdb";
+                    command.CommandText = "CREATE DATABASE userdb2;";
                     command.ExecuteNonQuery();
+                    connectionMaster.Close();
 
+                    string connectionString = @"Server=.\SQLEXPRESS;Database=userdb2;Trusted_Connection=True";
+                    SqlConnection dbConnection = new SqlConnection(connectionString);
+                    dbConnection.Open();
                     command.CommandText = @"CREATE TABLE Users
                                             (
                                             	ID int IDENTITY PRIMARY KEY,
                                             	[Name] nvarchar(50) NOT NULL,
                                             	[Age] int NOT NULL
-                                            )
-                                            GO";
+                                            );";
+                    command.Connection = dbConnection;
                     command.ExecuteNonQuery();
+                    dbConnection.Close();
                     isExists = true;
                     Console.WriteLine("База данных создана! Продуктивной работы)");
                     Thread.Sleep(1500);
