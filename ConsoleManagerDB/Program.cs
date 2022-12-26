@@ -543,7 +543,7 @@ namespace ConsoleManagerDB
                 Connection = connectionMaster
             };
 
-            SqlParameter dbNameParam = new SqlParameter("@dbName", "userdb1");
+            SqlParameter dbNameParam = new SqlParameter("@dbName", "userdb");
             command.Parameters.Add(dbNameParam);
 
             SqlDataReader reader = command.ExecuteReader();
@@ -563,11 +563,11 @@ namespace ConsoleManagerDB
                 string create = Console.ReadLine();
                 if (create == "1")
                 {
-                    command.CommandText = "CREATE DATABASE userdb2;";
+                    command.CommandText = "CREATE DATABASE userdb;";
                     command.ExecuteNonQuery();
                     connectionMaster.Close();
 
-                    string connectionString = @"Server=.\SQLEXPRESS;Database=userdb2;Trusted_Connection=True";
+                    string connectionString = @"Server=.\SQLEXPRESS;Database=userdb;Trusted_Connection=True";
                     SqlConnection dbConnection = new SqlConnection(connectionString);
                     dbConnection.Open();
                     command.CommandText = @"CREATE TABLE Users
