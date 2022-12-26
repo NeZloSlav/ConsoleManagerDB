@@ -549,6 +549,7 @@ namespace ConsoleManagerDB
 
             if (reader.HasRows)
             {
+                reader.Close();
                 Console.WriteLine("База найдена! Продуктивной работы)");
                 isExists = true;
                 Thread.Sleep(1500);
@@ -556,6 +557,7 @@ namespace ConsoleManagerDB
             }
             else
             {
+                reader.Close();
                 Console.WriteLine("База userdb не найдена, создать её? (0-нет/1-да)");
                 string create = Console.ReadLine();
                 if (create == "1")
