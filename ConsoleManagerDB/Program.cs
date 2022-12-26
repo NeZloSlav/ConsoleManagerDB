@@ -562,6 +562,15 @@ namespace ConsoleManagerDB
                 {
                     command.CommandText = "CREATE DATABASE userdb";
                     command.ExecuteNonQuery();
+
+                    command.CommandText = @"CREATE TABLE Users
+                                            (
+                                            	ID int IDENTITY PRIMARY KEY,
+                                            	[Name] nvarchar(50) NOT NULL,
+                                            	[Age] int NOT NULL
+                                            )
+                                            GO";
+                    command.ExecuteNonQuery();
                     isExists = true;
                     Console.WriteLine("База данных создана! Продуктивной работы)");
                     Thread.Sleep(1500);
